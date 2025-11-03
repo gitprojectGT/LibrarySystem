@@ -1,0 +1,28 @@
+{
+  "name": "librarysystem",
+  "version": "1.0.0",
+  "description": "Playwright E2E tests for Library System application",
+  "main": "index.js",
+  "scripts": {
+    "wait-for-server": "bash wait-for-server.sh",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report",
+    "codegen": "playwright codegen https://frontendui-librarysystem.onrender.com"
+  },
+  "keywords": [
+    "playwright",
+    "testing",
+    "e2e",
+    "typescript",
+    "library-system"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^24.9.2",
+    "typescript": "^5.9.3"
+  }
+}
