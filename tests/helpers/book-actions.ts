@@ -14,7 +14,7 @@ export class BookActions {
     for (const selector of SELECTORS.BOOKS_LINK) {
       if (await this.page.locator(selector).count() > 0) {
         await this.page.locator(selector).first().click();
-        await this.page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+        await this.page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
         return;
       }
     }
@@ -44,52 +44,119 @@ export class BookActions {
     publicationDate?: string;
     price?: string;
   }) {
+    const results: { field: string; success: boolean }[] = [];
+
     if (bookData.title) {
-      await this.fillField('title', bookData.title);
+      const success = await this.fillField('title', bookData.title);
+      results.push({ field: 'title', success });
     }
     if (bookData.author) {
-      await this.fillField('author', bookData.author);
+      const success = await this.fillField('author', bookData.author);
+      results.push({ field: 'author', success });
     }
     if (bookData.isbn) {
-      await this.fillField('isbn', bookData.isbn);
+      const success = await this.fillField('isbn', bookData.isbn);
+      results.push({ field: 'isbn', success });
     }
     if (bookData.genre) {
-      await this.fillField('genre', bookData.genre);
+      const success = await this.fillField('genre', bookData.genre);
+      results.push({ field: 'genre', success });
     }
     if (bookData.publicationDate) {
-      await this.fillField(['publicationDate', 'publication-date', 'date'], bookData.publicationDate);
+      const success = await this.fillField(['publicationDate', 'publication-date', 'date'], bookData.publicationDate);
+      results.push({ field: 'publicationDate', success });
     }
     if (bookData.price) {
-      await this.fillField('price', bookData.price);
+      const success = await this.fillField('price', bookData.price);
+      results.push({ field: 'price', success });
+    }
+
+    // Log summary of filled fields
+    const successful = results.filter(r => r.success);
+    const failed = results.filter(r => !r.success);
+    
+    console.log(` Form filling summary: ${successful.length}/${results.length} fields filled successfully`);
+    if (failed.length > 0) {
+      console.warn(`Failed to fill fields: ${failed.map(f => f.field).join(', ')}`);
     }
   }
 
   /**
    * Helper to fill a field by multiple possible names
    */
-  private async fillField(fieldName: string | string[], value: string) {
+  /**
+   * Enhanced field filling method with comprehensive element type support and detailed logging
+   * @param fieldName - Single field name or array of field names to try
+   * @param value - Value to fill/select in the field
+   * @returns Promise<boolean> - true if field was found and filled, false otherwise
+   */
+  private async fillField(fieldName: string | string[], value: string): Promise<boolean> {
     const fieldNames = Array.isArray(fieldName) ? fieldName : [fieldName];
+    console.log(`Attempting to fill field(s): ${fieldNames.join('|')} with value: "${value}"`);
 
     for (const name of fieldNames) {
       const selectors = FORM_FIELDS.getFieldSelectors(name);
+      console.log(`Trying ${selectors.length} selectors for field: ${name}`);
 
-      for (const selector of selectors) {
+      for (let i = 0; i < selectors.length; i++) {
+        const selector = selectors[i];
         const element = this.page.locator(selector).first();
+        
         if (await element.count() > 0) {
-          const tagName = await element.evaluate(el => el.tagName.toLowerCase());
-          
-          if (tagName === 'select') {
-            await element.selectOption({ label: value });
-          } else {
-            await element.fill(value);
+          try {
+            // Check if element is visible and enabled
+            await element.waitFor({ state: 'visible', timeout: 2000 });
+            const isEnabled = await element.isEnabled();
+            
+            if (!isEnabled) {
+              console.log(`Field found but disabled: ${selector}`);
+              continue;
+            }
+
+            const tagName = await element.evaluate(el => el.tagName.toLowerCase());
+            const inputType = await element.getAttribute('type');
+            
+            console.log(`Found field: ${selector} (${tagName}${inputType ? `:${inputType}` : ''})`);
+            
+            // Handle different input types
+            if (tagName === 'select') {
+              // Try different selection methods
+              try {
+                await element.selectOption({ label: value });
+              } catch {
+                try {
+                  await element.selectOption({ value: value });
+                } catch {
+                  await element.selectOption(value);
+                }
+              }
+            } else if (inputType === 'checkbox' || inputType === 'radio') {
+              // Handle checkbox/radio inputs
+              if (value.toLowerCase() === 'true' || value === '1') {
+                await element.check();
+              } else {
+                await element.uncheck();
+              }
+            } else {
+              // Handle text inputs, textareas, etc.
+              await element.clear();
+              await element.fill(value);
+            }
+            
+            console.log(`Successfully filled field: ${name} with value: "${value}"`);
+            return true;
+            
+          } catch (error) {
+            console.log(`Error filling field ${selector}: ${error instanceof Error ? error.message : String(error)}`);
+            continue;
           }
-          return;
         }
       }
     }
     
-    // If field not found, log for debugging
-    console.log(`Field "${fieldNames.join('|')}" not found with value "${value}"`);
+    // If no field was found and filled
+    console.warn(`Field "${fieldNames.join('|')}" not found or could not be filled with value "${value}"`);
+    return false;
   }
 
   /**
@@ -99,7 +166,7 @@ export class BookActions {
     for (const selector of SELECTORS.SUBMIT_BUTTON) {
       if (await this.page.locator(selector).count() > 0) {
         await this.page.locator(selector).first().click();
-        await this.page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+        await this.page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
         return;
       }
     }
@@ -153,7 +220,7 @@ export class BookActions {
     for (const selector of SELECTORS.CONFIRM_DELETE_BUTTON) {
       if (await this.page.locator(selector).count() > 0) {
         await this.page.locator(selector).first().click();
-        await this.page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+        await this.page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
         return;
       }
     }

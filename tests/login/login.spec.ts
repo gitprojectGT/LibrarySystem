@@ -1,43 +1,43 @@
-import { test, expect, Locator } from '@playwright/test';
-import { AuthHelper } from '../helpers/auth';
-import { Assertions } from '../helpers/assertions';
+import { test, expect } from '../fixtures/test-helpers';
+import { Locator } from '@playwright/test';
 import { 
   CREDENTIALS, 
   TIMEOUTS, 
   VIEWPORT, 
   URLS, 
   URL_PATTERNS, 
-  VALIDATION_MESSAGES_LOGIN
+  VALIDATION_MESSAGES_LOGIN,
+  SELECTORS
 } from '../fixtures/test-data';
 
 test.describe('Login Functionality', () => {
-  let authHelper: AuthHelper;
-  let assertions: Assertions;
-
   test.beforeEach(async ({ page }) => {
-    authHelper = new AuthHelper(page);
-    assertions = new Assertions(page);
+    try {
+      // Maximize browser viewport
+      await page.setViewportSize(VIEWPORT.DESKTOP);
 
-    // Maximize browser viewport
-    await page.setViewportSize(VIEWPORT.DESKTOP);
-
-    // Navigate directly to login page
-    await page.goto(URLS.LOGIN_PATH);
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+      // Navigate directly to login page with better error handling
+      await page.goto(URLS.LOGIN_PATH, { waitUntil: 'domcontentloaded', timeout: 15000 });
+      await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
+      await page.waitForTimeout(1000); // Give the page a moment to settle
+    } catch (error) {
+      console.error('BeforeEach navigation failed:', error);
+      throw error;
+    }
   });
 
-  test('should successfully login with valid credentials', async ({ page }) => {
+  test('should successfully login with valid credentials', async ({ page, authHelper, assertions }) => {
     await authHelper.login('admin', 'admin');
     await assertions.verifyDashboardLoaded();
   });
 
   test('should display error with invalid username or password', async ({ page }) => {
     // Manually fill the form to avoid timeout issues with helper
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+    await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
 
-    const usernameField = page.locator('input[type="text"]').first();
-    const passwordField = page.locator('input[type="password"]').first();
-    const loginButton = page.locator('button[type="submit"], button:has-text("Log In")').first();
+    const usernameField = page.locator(SELECTORS.USERNAME_FIELD.join(', ')).first();
+    const passwordField = page.locator(SELECTORS.PASSWORD_FIELD).first();
+    const loginButton = page.locator(SELECTORS.LOGIN_BUTTON.join(', ')).first();
 
     await usernameField.fill('invaliduser');
     await passwordField.fill('admin');
@@ -53,7 +53,7 @@ test.describe('Login Functionality', () => {
   });
 
 
-  test('should display error  with your submission', async ({ page }) => {
+  test('should display error  with your submission', async ({ page, assertions }) => {
     await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
 
     const loginButton = page.locator('button[type="submit"], button:has-text("Log In")').first();
@@ -74,11 +74,11 @@ test.describe('Login Functionality', () => {
     expect(url.includes('login') || url === URLS.BASE_URL).toBeTruthy();
   });
 
-  test('should display error with empty username', async ({ page }) => {
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+  test('should display error with empty username', async ({ page, assertions }) => {
+    await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
 
     const passwordField = page.locator('input[type="password"]').first();
-    const loginButton = page.locator('button[type="submit"], button:has-text("Log In")').first();
+    const loginButton = page.locator(SELECTORS.LOGIN_BUTTON.join(', ')).first();
 
     await passwordField.fill('admin');
     await loginButton.click();
@@ -95,11 +95,11 @@ test.describe('Login Functionality', () => {
     expect(url.includes('login') || url === URLS.BASE_URL).toBeTruthy();
   });
 
-  test('should display error with empty password', async ({ page }) => {
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+  test('should display error with empty password', async ({ page, assertions }) => {
+    await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
 
-    const usernameField = page.locator('input[type="text"]').first();
-    const loginButton = page.locator('button[type="submit"], button:has-text("Log In")').first();
+    const usernameField = page.locator(SELECTORS.USERNAME_FIELD.join(', ')).first();
+    const loginButton = page.locator(SELECTORS.LOGIN_BUTTON.join(', ')).first();
 
     await usernameField.fill('admin');
     await loginButton.click();
@@ -117,7 +117,7 @@ test.describe('Login Functionality', () => {
 
 
   test('should trim whitespace from credentials', async ({ page }) => {
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+    await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
 
     const usernameField = page.locator('input[type="text"]').first();
     const passwordField = page.locator('input[type="password"]').first();
@@ -128,7 +128,7 @@ test.describe('Login Functionality', () => {
     await passwordField.fill('  admin  ');
     await loginButton.click();
 
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+    await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
     
     // If the app properly trims whitespace, login should succeed
     // and we should be redirected away from the login page
@@ -144,14 +144,14 @@ test.describe('Login Functionality', () => {
     await expect(passwordField).toHaveAttribute('type', 'password');
   });
 
-  test('This is a flaky test only to show Log out button doesn\'t work successfully', async ({ page }) => {
+  test('This is a flaky test only to show Log out button doesn\'t work successfully', async ({ page, authHelper, assertions }) => {
     await authHelper.login(CREDENTIALS.VALID.USERNAME, CREDENTIALS.VALID.PASSWORD);
     await assertions.verifyDashboardLoaded();
 
     await authHelper.logout();
 
     // Should return to login page
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+    await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
     const url = page.url();
     expect(url).toMatch(URL_PATTERNS.LOGOUT_WRONG_PATH);
   });

@@ -1,7 +1,4 @@
-import { test, expect } from '@playwright/test';
-import { AuthHelper } from '../helpers/auth';
-import { BookActions } from '../helpers/book-actions';
-import { Assertions } from '../helpers/assertions';
+import { test, expect } from '../fixtures/test-helpers';
 import { CREDENTIALS, BOOK_DATA, VIEWPORT, URLS, TIMEOUTS } from '../fixtures/test-data';
 
 /**
@@ -13,11 +10,8 @@ import { CREDENTIALS, BOOK_DATA, VIEWPORT, URLS, TIMEOUTS } from '../fixtures/te
 
 test.describe('E2E User Journeys', () => {
   test.describe('Successful User Journey: Login to Add Book', () => {
-    test('should complete full journey - login, navigate, and add a book', async ({ page }) => {
-      // Initialize helpers
-      const authHelper = new AuthHelper(page);
-      const bookActions = new BookActions(page);
-      const assertions = new Assertions(page);
+    test('should complete full journey - login, navigate, and add a book', async ({ page, authHelper, bookActions, assertions }) => {
+      // Helpers are now available as fixture parameters
 
       // ========== STEP 1: Navigate to Application ==========
       await test.step('Navigate to login page', async () => {
@@ -25,8 +19,8 @@ test.describe('E2E User Journeys', () => {
         await page.setViewportSize(VIEWPORT.DESKTOP);
 
         // Navigate directly to login page
-        await page.goto(URLS.LOGIN_PATH);
-        await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+        await page.goto(URLS.LOGIN_PATH, { waitUntil: 'domcontentloaded', timeout: 15000 });
+        await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
 
         // Verify we're on the login page
         const currentUrl = page.url();
@@ -81,7 +75,7 @@ test.describe('E2E User Journeys', () => {
       await test.step('Navigate to add book page', async () => {
         // Navigate directly to add book page instead of using modal dialog
         await page.goto(URLS.ADD_BOOK_PATH);
-        await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+        await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
 
         // Verify we're on the add book page
         await expect(page).toHaveURL(URLS.ADD_BOOK_PATH);
@@ -176,10 +170,8 @@ test.describe('E2E User Journeys', () => {
   });
 
   test.describe('Complete CRUD Journey', () => {
-    test('should complete full CRUD cycle - create, read, update, delete', async ({ page }) => {
-      const authHelper = new AuthHelper(page);
-      const bookActions = new BookActions(page);
-      const assertions = new Assertions(page);
+    test('should complete full CRUD cycle - create, read, update, delete', async ({ page, authHelper, bookActions, assertions }) => {
+      // Helpers are now available as fixture parameters
 
       // Login
       await test.step('Login to application', async () => {
@@ -187,8 +179,8 @@ test.describe('E2E User Journeys', () => {
         await page.setViewportSize(VIEWPORT.DESKTOP);
 
         // Navigate directly to login page
-        await page.goto(URLS.LOGIN_PATH);
-        await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+        await page.goto(URLS.LOGIN_PATH, { waitUntil: 'domcontentloaded', timeout: 15000 });
+        await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
 
         await authHelper.login(CREDENTIALS.VALID.USERNAME, CREDENTIALS.VALID.PASSWORD);
         await assertions.verifyDashboardLoaded();
@@ -205,7 +197,7 @@ test.describe('E2E User Journeys', () => {
       // CREATE
       await test.step('Create a new book', async () => {
         await page.goto(URLS.ADD_BOOK_PATH);
-        await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+        await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
         await bookActions.fillBookForm(testBook);
         await bookActions.submitBookForm();
         await page.waitForTimeout(1000);

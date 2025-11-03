@@ -1,0 +1,67 @@
+{
+  "validBooks": [
+    {
+      "title": "The Great Gatsby",
+      "author": "F. Scott Fitzgerald",
+      "isbn": "9780743273565",
+      "genre": "Fiction",
+      "publicationDate": "1925-04-10",
+      "price": "15.99"
+    },
+    {
+      "title": "To Kill a Mockingbird",
+      "author": "Harper Lee",
+      "isbn": "9780060935467",
+      "genre": "Fiction",
+      "publicationDate": "1960-07-11",
+      "price": "12.99"
+    },
+    {
+      "title": "1984",
+      "author": "George Orwell",
+      "isbn": "9780451524935",
+      "genre": "Dystopian Fiction",
+      "publicationDate": "1949-06-08",
+      "price": "13.99"
+    }
+  ],
+  "testBooks": {
+    "toDelete": {
+      "title": "The Book to Delete",
+      "author": "F. Book to Delete",
+      "isbn": "9780743273565",
+      "genre": "Fiction",
+      "publicationDate": "1925-04-10",
+      "price": "15.99"
+    },
+    "journey1": {
+      "title": "Pragmatic Programmer",
+      "author": "Andrew Hunt",
+      "isbn": "9780201616224",
+      "genre": "Programming",
+      "publicationDate": "1999-10-20",
+      "price": "45.99"
+    },
+    "journey2": {
+      "title": "Clean Code Handbook",
+      "author": "Robert C. Martin",
+      "isbn": "9780132350884",
+      "genre": "Programming",
+      "publicationDate": "2008-08-01",
+      "price": "45.99"
+    },
+    "emptyValidation": {
+      "title": "",
+      "author": "",
+      "isbn": "9780123456789"
+    },
+    "unicode": {
+      "title": "Unicode Test: 测试员",
+      "author": "José Super Tester",
+      "isbn": "9780123456789",
+      "genre": "Fiction",
+      "publicationDate": "1925-04-10",
+      "price": "99.99"
+    }
+  }
+}

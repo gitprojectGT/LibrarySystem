@@ -1,31 +1,25 @@
-import { test, expect } from '@playwright/test';
-import { AuthHelper } from '../helpers/auth';
-import { BookActions } from '../helpers/book-actions';
-import { Assertions } from '../helpers/assertions';
-import { CREDENTIALS, BOOK_DATA, VALIDATION_MESSAGES, URLS , TIMEOUTS } from '../fixtures/test-data';
+import { test, expect } from '../fixtures/test-helpers';
 
 test.describe('Book Creation Tests', () => {
-  let authHelper: AuthHelper;
-  let bookActions: BookActions;
-  let assertions: Assertions;
-
-  test.beforeEach(async ({ page }) => {
-    authHelper = new AuthHelper(page);
-    bookActions = new BookActions(page);
-    assertions = new Assertions(page);
-
-    // Login before each test
-    await authHelper.login(CREDENTIALS.VALID.USERNAME, CREDENTIALS.VALID.PASSWORD);
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
-    await bookActions.navigateToBooks();
+  test.beforeEach(async ({ page, authHelper, bookActions, testData }) => {
+    try {
+      // Login before each test with better error handling
+      const credentials = testData.getValidCredentials();
+      await authHelper.login(credentials.username, credentials.password);
+      await page.waitForLoadState(testData.getTimeouts().domContentLoaded);
+      await bookActions.navigateToBooks();
+    } catch (error) {
+      console.error('BeforeEach failed:', error);
+      throw error;
+    }
   });
 
-  test('should create a book with all valid fields', async ({ page }) => {
+  test('should create a book with all valid fields', async ({ page, bookActions, assertions, testData }) => {
     // Navigate directly to add book page instead of using openAddBookDialog
-    await page.goto(URLS.ADD_BOOK_PATH);
-    await page.waitForLoadState('networkidle');
+    await page.goto(testData.getUrls().addBookPath);
+    await page.waitForLoadState(testData.getTimeouts().domContentLoaded);
 
-    const bookData = BOOK_DATA.VALID_BOOK;
+    const bookData = testData.getRandomValidBook();
 
     // Fill form fields with better error handling
     await bookActions.fillBookForm(bookData);
@@ -36,7 +30,7 @@ test.describe('Book Creation Tests', () => {
     await bookActions.submitBookForm();
 
     // Wait for any loading or navigation to complete
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+    await page.waitForLoadState(testData.getTimeouts().domContentLoaded);
     await page.waitForTimeout(2000); 
 
     // Check for any error messages after submission
@@ -50,26 +44,29 @@ test.describe('Book Creation Tests', () => {
     await assertions.verifyBookInList(bookData.title);
   });
 
-  test('should validate empty title and author fields', async ({ page }) => {
+  test('should validate empty title and author fields', async ({ page, bookActions, testData }) => {
     await bookActions.openAddBookDialog();
 
-    const bookData = BOOK_DATA.EMPTY_VALIDATION_BOOK;
+    const bookData = testData.getBookForScenario('empty');
 
     await bookActions.fillBookForm(bookData);
     await bookActions.submitBookForm();
 
+    // Wait for validation errors to appear
+    await page.waitForTimeout(1000);
+
     // Should show validation error or remain on form
     // The error displayed on page depends on which fields are invalid. 
-    //This approach covers both.
+    // This approach covers both.
 
-    const hasError = await page.locator(' .error, [class*="error"]').count() > 0;
-    expect(hasError).toBeFalsy();
+    const hasError = await page.locator('.error, [class*="error"]').count() > 0;
+    expect(hasError).toBeTruthy();
   });
 
-  test('should handle special unicode characters in book details', async ({ page }) => {
+  test('should handle special unicode characters in book details', async ({ page, bookActions, testData }) => {
     await bookActions.openAddBookDialog();
 
-    const bookData = BOOK_DATA.UNICODE_BOOK;
+    const bookData = testData.getBookForScenario('unicode');
 
     await bookActions.fillBookForm(bookData);
     await bookActions.submitBookForm();
@@ -82,10 +79,10 @@ test.describe('Book Creation Tests', () => {
     expect(bookVisible).toBeTruthy();
   });
 
-  test('should validate required fields and show error messages', async ({ page }) => {
+  test('should validate required fields and show error messages', async ({ page, bookActions, assertions, testData }) => {
     // Navigate directly to add book page
-    await page.goto(URLS.ADD_BOOK_PATH);
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+    await page.goto(testData.getUrls().addBookPath);
+    await page.waitForLoadState(testData.getTimeouts().domContentLoaded);
 
     // Submit empty form to trigger validation
     await bookActions.submitBookForm();
@@ -94,13 +91,14 @@ test.describe('Book Creation Tests', () => {
     await page.waitForTimeout(1000);
 
     // Verify all required field error messages are displayed
+    const validationMessages = testData.getValidationMessages().requiredFields;
     const expectedErrors = [
-      VALIDATION_MESSAGES.REQUIRED_FIELDS.TITLE,
-      VALIDATION_MESSAGES.REQUIRED_FIELDS.AUTHOR,
-      VALIDATION_MESSAGES.REQUIRED_FIELDS.GENRE,
-      VALIDATION_MESSAGES.REQUIRED_FIELDS.ISBN,
-      VALIDATION_MESSAGES.REQUIRED_FIELDS.PUBLICATION_DATE,
-      VALIDATION_MESSAGES.REQUIRED_FIELDS.PRICE,
+      validationMessages.title,
+      validationMessages.author,
+      validationMessages.genre,
+      validationMessages.isbn,
+      validationMessages.publicationDate,
+      validationMessages.price,
     ];
 
     await assertions.verifyValidationErrors(expectedErrors);

@@ -117,13 +117,16 @@ export const SELECTORS = {
     'input[name="user"]',
     'input[id="username"]',
   ],
-  PASSWORD_FIELD: ['input[type="password"]'],
+  PASSWORD_FIELD: 'input[type="password"]',
+
   LOGIN_BUTTON: [
     'button[type="submit"]',
     'button:has-text("Login")',
+    'button:has-text("Log In")',
     'button:has-text("Sign in")',
     'input[type="submit"]',
   ],
+
 
   // Navigation selectors
   BOOKS_LINK: [
@@ -143,6 +146,9 @@ export const SELECTORS = {
     'button[type="submit"]',
     'button:has-text("Submit")',
     'button:has-text("Add")',
+    'button:has-text("Save")',
+    'button:has-text("Create")',
+    'input[type="submit"]',
   ],
 
   // Dialog/Modal selectors
@@ -166,6 +172,10 @@ export const SELECTORS = {
     '[class*="error"]',
     '.error-message',
     '[role="alert"]',
+    '.form-error',
+    '.validation-error',
+    '.text-danger',
+    '.alert-danger',
   ],
 
   // Book management selectors
@@ -193,7 +203,21 @@ export const SELECTORS = {
 
 // Test timeouts and wait times
 export const TIMEOUTS = {
+  /**
+   * Network idle state - waits until no network requests for 500ms
+   * Use with caution: may not be reliable for SPAs with background polling
+   * Consider using 'domcontentloaded' for basic page loads or specific element waits
+   */
   NETWORK_IDLE: 'networkidle' as const,
+  /**
+   * DOM content loaded - faster alternative when full network idle is not needed
+   * Recommended for basic page navigation and form interactions
+   */
+  DOM_CONTENT_LOADED: 'domcontentloaded' as const,
+  /**
+   * Load state - waits for full page load including images and stylesheets
+   */
+  LOAD: 'load' as const,
 } as const;
 
 // Viewport configuration
@@ -206,15 +230,28 @@ export const VIEWPORT = {
 
 // Form field selector generators
 export const FORM_FIELDS = {
-  // Potential selectors for a field by name
+  /**
+   * Generates comprehensive selectors for form fields by name
+   * Covers various HTML input types, attributes, and common patterns used in web applications
+   * @param fieldName - The field name to search for
+   * @returns Array of CSS selectors in priority order (most specific first)
+   */
   getFieldSelectors: (fieldName: string) => [
+    // Primary selectors - exact name/id matches (highest priority)
     `input[name="${fieldName}"]`,
     `input[id="${fieldName}"]`,
     `textarea[name="${fieldName}"]`,
     `textarea[id="${fieldName}"]`,
     `select[name="${fieldName}"]`,
     `select[id="${fieldName}"]`,
+    // Secondary selectors - case-insensitive placeholder text
     `input[placeholder*="${fieldName}" i]`,
+    // Tertiary selectors - accessibility and testing attributes
+    `input[aria-label*="${fieldName}" i]`,
+    `textarea[aria-label*="${fieldName}" i]`,
+    `input[data-testid="${fieldName}"]`,
+    `textarea[data-testid="${fieldName}"]`,
+    `select[data-testid="${fieldName}"]`,
   ],
 
 
@@ -222,7 +259,8 @@ export const FORM_FIELDS = {
 
 // URL patterns for validation
 export const URL_PATTERNS = {
-  LOGOUT_WRONG_PATH: "https://frontendui-librarysystem.onrender.com/books",
-  LOGIN_PAGE: /login/i,
-  BOOKS_PAGE: /books/i,
+  // Fixed: Reusing BASE_URL and making patterns more consistent
+  LOGOUT_WRONG_PATH: `${URLS.BASE_URL}${URLS.BOOKS_PATH}`,
+  LOGIN_PAGE: new RegExp(`${URLS.BASE_URL}${URLS.LOGIN_PATH}|${URLS.LOGIN_PATH}`, 'i'),
+  BOOKS_PAGE: new RegExp(`${URLS.BASE_URL}${URLS.BOOKS_PATH}|${URLS.BOOKS_PATH}`, 'i'),
 } as const;
