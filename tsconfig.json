@@ -15,7 +15,8 @@
     "allowSyntheticDefaultImports": true,
     "declaration": false,
     "sourceMap": false,
-    "noEmit": true
+    "noEmit": true,
+    "ignoreDeprecations": "6.0"
   },
   "include": ["tests/**/*", "playwright.config.ts"],
   "exclude": ["node_modules", "dist", "playwright-report", "test-results"]
