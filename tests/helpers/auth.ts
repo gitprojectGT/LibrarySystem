@@ -146,6 +146,6 @@ export class AuthHelper {
       }
     }
 
-    await this.page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+    await this.page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
   }
 }
