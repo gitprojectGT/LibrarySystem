@@ -14,7 +14,7 @@ export class Assertions {
     console.log('Verifying dashboard loaded...' + this.page.url());
 
     await expect(this.page).toHaveURL(URL_PATTERNS.BOOKS_PAGE);
-    await this.page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+    await this.page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
   }
 
 
