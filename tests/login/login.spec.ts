@@ -117,7 +117,7 @@ test.describe('Login Functionality', () => {
 
 
   test('should trim whitespace from credentials', async ({ page }) => {
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+    await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
 
     const usernameField = page.locator('input[type="text"]').first();
     const passwordField = page.locator('input[type="password"]').first();
@@ -128,7 +128,7 @@ test.describe('Login Functionality', () => {
     await passwordField.fill('  admin  ');
     await loginButton.click();
 
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+    await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
     
     // If the app properly trims whitespace, login should succeed
     // and we should be redirected away from the login page
