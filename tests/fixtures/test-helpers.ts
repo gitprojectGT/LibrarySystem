@@ -23,7 +23,7 @@ export const test = base.extend<TestHelpers>({
   /**
    * AuthHelper fixture - provides authentication helper methods
    */
-  authHelper: async ({ page }, use) => {
+  authHelper: async ({ page }: { page: Page }, use: (r: AuthHelper) => Promise<void>) => {
     const authHelper = new AuthHelper(page);
     await use(authHelper);
   },
@@ -31,7 +31,7 @@ export const test = base.extend<TestHelpers>({
   /**
    * BookActions fixture - provides book management helper methods
    */
-  bookActions: async ({ page }, use) => {
+  bookActions: async ({ page }: { page: Page }, use: (r: BookActions) => Promise<void>) => {
     const bookActions = new BookActions(page);
     await use(bookActions);
   },
@@ -39,7 +39,7 @@ export const test = base.extend<TestHelpers>({
   /**
    * Assertions fixture - provides custom assertion helper methods
    */
-  assertions: async ({ page }, use) => {
+  assertions: async ({ page }: { page: Page }, use: (r: Assertions) => Promise<void>) => {
     const assertions = new Assertions(page);
     await use(assertions);
   },

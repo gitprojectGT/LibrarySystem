@@ -17,7 +17,7 @@ test.describe('Book Creation Tests', () => {
   test('should create a book with all valid fields', async ({ page, bookActions, assertions }) => {
     // Navigate directly to add book page instead of using openAddBookDialog
     await page.goto(URLS.ADD_BOOK_PATH);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
 
     const bookData = BOOK_DATA.VALID_BOOK;
 
@@ -54,10 +54,10 @@ test.describe('Book Creation Tests', () => {
 
     // Should show validation error or remain on form
     // The error displayed on page depends on which fields are invalid. 
-    //This approach covers both.
+    // This approach covers both.
 
-    const hasError = await page.locator(' .error, [class*="error"]').count() > 0;
-    expect(hasError).toBeFalsy();
+    const hasError = await page.locator('.error, [class*="error"]').count() > 0;
+    expect(hasError).toBeTruthy();
   });
 
   test('should handle special unicode characters in book details', async ({ page, bookActions }) => {
@@ -79,8 +79,7 @@ test.describe('Book Creation Tests', () => {
   test('should validate required fields and show error messages', async ({ page, bookActions, assertions }) => {
     // Navigate directly to add book page
     await page.goto(URLS.ADD_BOOK_PATH);
-    // await page.waitForLoadState('domcontentloaded'); //
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+    await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
 
     // Submit empty form to trigger validation
     await bookActions.submitBookForm();
