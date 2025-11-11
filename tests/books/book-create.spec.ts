@@ -30,7 +30,7 @@ test.describe('Book Creation Tests', () => {
     await bookActions.submitBookForm();
 
     // Wait for any loading or navigation to complete
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+    await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
     await page.waitForTimeout(2000); 
 
     // Check for any error messages after submission
