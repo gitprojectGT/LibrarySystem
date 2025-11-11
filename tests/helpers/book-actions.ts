@@ -67,7 +67,7 @@ export class BookActions {
   /**
    * Helper to fill a field by multiple possible names
    */
-  private async fillField(fieldName: string | string[], value: string) {
+  private async fillField(fieldName: string | string[], value: string) { // TO DO:  enhance for select fields and checking if field exists and logging 
     const fieldNames = Array.isArray(fieldName) ? fieldName : [fieldName];
 
     for (const name of fieldNames) {

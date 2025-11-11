@@ -117,13 +117,16 @@ export const SELECTORS = {
     'input[name="user"]',
     'input[id="username"]',
   ],
-  PASSWORD_FIELD: ['input[type="password"]'],
+  PASSWORD_FIELD: 'input[type="password"]',
+
   LOGIN_BUTTON: [
     'button[type="submit"]',
     'button:has-text("Login")',
+    'button:has-text("Log In")',
     'button:has-text("Sign in")',
     'input[type="submit"]',
   ],
+
 
   // Navigation selectors
   BOOKS_LINK: [
@@ -142,7 +145,7 @@ export const SELECTORS = {
   SUBMIT_BUTTON: [
     'button[type="submit"]',
     'button:has-text("Submit")',
-    'button:has-text("Add")',
+    'button:has-text("Add")', // TO DO: verify these selectors
   ],
 
   // Dialog/Modal selectors
@@ -165,7 +168,7 @@ export const SELECTORS = {
     '.invalid-feedback',
     '[class*="error"]',
     '.error-message',
-    '[role="alert"]',
+    '[role="alert"]', // TO DO :verify these selectors
   ],
 
   // Book management selectors
@@ -193,6 +196,8 @@ export const SELECTORS = {
 
 // Test timeouts and wait times
 export const TIMEOUTS = {
+  // TO DO: adjust as needed and verify if networkidle is the best choice. NO! It is not the best choice. 
+  // Maybe it's better to use documentloaded so it will wait for DOMContentLoaded ???
   NETWORK_IDLE: 'networkidle' as const,
 } as const;
 
@@ -206,7 +211,7 @@ export const VIEWPORT = {
 
 // Form field selector generators
 export const FORM_FIELDS = {
-  // Potential selectors for a field by name
+  // TODO :Potential selectors for a field by name. Are they sufficient or  do we need more or do we define them differently ?
   getFieldSelectors: (fieldName: string) => [
     `input[name="${fieldName}"]`,
     `input[id="${fieldName}"]`,
@@ -222,6 +227,7 @@ export const FORM_FIELDS = {
 
 // URL patterns for validation
 export const URL_PATTERNS = {
+  // TODO: They are redundant . Verify these patterns and refine logout wrong path and reuse URLS.BASE_URL where applicable
   LOGOUT_WRONG_PATH: "https://frontendui-librarysystem.onrender.com/books",
   LOGIN_PAGE: /login/i,
   BOOKS_PAGE: /books/i,

@@ -24,7 +24,7 @@ export class Assertions {
    */
   async verifyBookInList(bookTitle: string) {
     // Try multiple selector strategies to find the book
-    const selectors = [
+    const selectors = [ //TO DO: enhance selectors and strategies
       `text=${bookTitle}`,
       `text="${bookTitle}"`,
       `[title*="${bookTitle}"]`,

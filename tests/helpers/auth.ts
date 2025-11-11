@@ -31,7 +31,7 @@ export class AuthHelper {
     }
 
     // Find and fill password field
-    await this.page.locator(SELECTORS.PASSWORD_FIELD.join(', ')).first().fill(password);
+    await this.page.locator(SELECTORS.PASSWORD_FIELD).first().fill(password);
 
     // Find and click login button using centralized selectors
     const loginButtonSelectors = SELECTORS.LOGIN_BUTTON;
@@ -53,9 +53,9 @@ export class AuthHelper {
   async logout() {
     const logoutSelectors = [
       'button:has-text("Logout")',
-      'button:has-text("Sign out")',
+      'button:has-text("Sign out")', //TO DO: verify these selectors
       'a:has-text("Logout")',
-      'a:has-text("Sign out")',
+      'a:has-text("Sign out")', //TO DO: verify these selectors
       '[class*="logout"]',
     ];
 

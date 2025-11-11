@@ -7,7 +7,8 @@ import {
   VIEWPORT, 
   URLS, 
   URL_PATTERNS, 
-  VALIDATION_MESSAGES_LOGIN
+  VALIDATION_MESSAGES_LOGIN,
+  SELECTORS
 } from '../fixtures/test-data';
 
 test.describe('Login Functionality', () => {
@@ -35,9 +36,9 @@ test.describe('Login Functionality', () => {
     // Manually fill the form to avoid timeout issues with helper
     await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
 
-    const usernameField = page.locator('input[type="text"]').first();
-    const passwordField = page.locator('input[type="password"]').first();
-    const loginButton = page.locator('button[type="submit"], button:has-text("Log In")').first();
+    const usernameField = page.locator(SELECTORS.USERNAME_FIELD.join(', ')).first();
+    const passwordField = page.locator(SELECTORS.PASSWORD_FIELD).first();
+    const loginButton = page.locator(SELECTORS.LOGIN_BUTTON.join(', ')).first();
 
     await usernameField.fill('invaliduser');
     await passwordField.fill('admin');
@@ -78,7 +79,7 @@ test.describe('Login Functionality', () => {
     await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
 
     const passwordField = page.locator('input[type="password"]').first();
-    const loginButton = page.locator('button[type="submit"], button:has-text("Log In")').first();
+    const loginButton = page.locator(SELECTORS.LOGIN_BUTTON.join(', ')).first();
 
     await passwordField.fill('admin');
     await loginButton.click();
@@ -98,8 +99,8 @@ test.describe('Login Functionality', () => {
   test('should display error with empty password', async ({ page }) => {
     await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
 
-    const usernameField = page.locator('input[type="text"]').first();
-    const loginButton = page.locator('button[type="submit"], button:has-text("Log In")').first();
+    const usernameField = page.locator(SELECTORS.USERNAME_FIELD.join(', ')).first();
+    const loginButton = page.locator(SELECTORS.LOGIN_BUTTON.join(', ')).first();
 
     await usernameField.fill('admin');
     await loginButton.click();

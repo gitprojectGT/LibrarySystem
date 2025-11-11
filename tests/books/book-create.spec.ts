@@ -85,6 +85,7 @@ test.describe('Book Creation Tests', () => {
   test('should validate required fields and show error messages', async ({ page }) => {
     // Navigate directly to add book page
     await page.goto(URLS.ADD_BOOK_PATH);
+    // await page.waitForLoadState('domcontentloaded'); //
     await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
 
     // Submit empty form to trigger validation
