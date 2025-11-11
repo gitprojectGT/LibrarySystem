@@ -14,7 +14,7 @@ export class BookActions {
     for (const selector of SELECTORS.BOOKS_LINK) {
       if (await this.page.locator(selector).count() > 0) {
         await this.page.locator(selector).first().click();
-        await this.page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+        await this.page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
         return;
       }
     }
@@ -166,7 +166,7 @@ export class BookActions {
     for (const selector of SELECTORS.SUBMIT_BUTTON) {
       if (await this.page.locator(selector).count() > 0) {
         await this.page.locator(selector).first().click();
-        await this.page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+        await this.page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
         return;
       }
     }
@@ -220,7 +220,7 @@ export class BookActions {
     for (const selector of SELECTORS.CONFIRM_DELETE_BUTTON) {
       if (await this.page.locator(selector).count() > 0) {
         await this.page.locator(selector).first().click();
-        await this.page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+        await this.page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
         return;
       }
     }
