@@ -1,26 +1,20 @@
-import { test, expect } from '@playwright/test';
-import { AuthHelper } from '../helpers/auth';
-import { BookActions } from '../helpers/book-actions';
-import { Assertions } from '../helpers/assertions';
+import { test, expect } from '../fixtures/test-helpers';
 import { CREDENTIALS,BOOK_DATA, TIMEOUTS } from '../fixtures/test-data';
 
 test.describe('Book Deletion Tests', () => {
-  let authHelper: AuthHelper;
-  let bookActions: BookActions;
-  let assertions: Assertions;
-
-  test.beforeEach(async ({ page }) => {
-    authHelper = new AuthHelper(page);
-    bookActions = new BookActions(page);
-    assertions = new Assertions(page);
-
-    // Login before each test
-    await authHelper.login(CREDENTIALS.VALID.USERNAME, CREDENTIALS.VALID.PASSWORD);
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
-    await bookActions.navigateToBooks();
+  test.beforeEach(async ({ page, authHelper, bookActions }) => {
+    try {
+      // Login before each test
+      await authHelper.login(CREDENTIALS.VALID.USERNAME, CREDENTIALS.VALID.PASSWORD);
+      await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
+      await bookActions.navigateToBooks();
+    } catch (error) {
+      console.error('BeforeEach failed:', error);
+      throw error;
+    }
   });
 
-  test('should delete a book successfully', async ({ page }) => {
+  test('should delete a book successfully', async ({ page, bookActions, assertions }) => {
     // Create a book first
     await bookActions.openAddBookDialog();
 

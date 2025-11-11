@@ -12,12 +12,18 @@ import {
 
 test.describe('Login Functionality', () => {
   test.beforeEach(async ({ page }) => {
-    // Maximize browser viewport
-    await page.setViewportSize(VIEWPORT.DESKTOP);
+    try {
+      // Maximize browser viewport
+      await page.setViewportSize(VIEWPORT.DESKTOP);
 
-    // Navigate directly to login page
-    await page.goto(URLS.LOGIN_PATH);
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+      // Navigate directly to login page with better error handling
+      await page.goto(URLS.LOGIN_PATH, { waitUntil: 'domcontentloaded', timeout: 15000 });
+      await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
+      await page.waitForTimeout(1000); // Give the page a moment to settle
+    } catch (error) {
+      console.error('BeforeEach navigation failed:', error);
+      throw error;
+    }
   });
 
   test('should successfully login with valid credentials', async ({ page, authHelper, assertions }) => {

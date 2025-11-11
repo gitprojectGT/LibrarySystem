@@ -19,8 +19,8 @@ test.describe('E2E User Journeys', () => {
         await page.setViewportSize(VIEWPORT.DESKTOP);
 
         // Navigate directly to login page
-        await page.goto(URLS.LOGIN_PATH);
-        await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+        await page.goto(URLS.LOGIN_PATH, { waitUntil: 'domcontentloaded', timeout: 15000 });
+        await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
 
         // Verify we're on the login page
         const currentUrl = page.url();
@@ -179,8 +179,8 @@ test.describe('E2E User Journeys', () => {
         await page.setViewportSize(VIEWPORT.DESKTOP);
 
         // Navigate directly to login page
-        await page.goto(URLS.LOGIN_PATH);
-        await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+        await page.goto(URLS.LOGIN_PATH, { waitUntil: 'domcontentloaded', timeout: 15000 });
+        await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
 
         await authHelper.login(CREDENTIALS.VALID.USERNAME, CREDENTIALS.VALID.PASSWORD);
         await assertions.verifyDashboardLoaded();

@@ -23,14 +23,28 @@ export class Assertions {
    * Verify book exists in the list
    */
   async verifyBookInList(bookTitle: string) {
-    // Try multiple selector strategies to find the book
-    const selectors = [ //TO DO: enhance selectors and strategies
-      `text=${bookTitle}`,
+    // Enhanced selector strategies with multiple approaches for book discovery
+    const selectors = [
+      // Direct text matching (most reliable)
       `text="${bookTitle}"`,
-      `[title*="${bookTitle}"]`,
+      `text=${bookTitle}`,
+      // Table-specific selectors (for tabular book lists)
       `td:has-text("${bookTitle}")`,
+      `th:has-text("${bookTitle}")`,
+      // Generic container selectors
       `div:has-text("${bookTitle}")`,
       `span:has-text("${bookTitle}")`,
+      `p:has-text("${bookTitle}")`,
+      // Attribute-based selectors
+      `[title*="${bookTitle}"]`,
+      `[aria-label*="${bookTitle}"]`,
+      // Data attributes 
+      `[data-title*="${bookTitle}"]`,
+      `[data-book-title*="${bookTitle}"]`,
+      // Book-specific class selectors
+      '.book-title:has-text("' + bookTitle + '")',
+      '.book-name:has-text("' + bookTitle + '")',
+      '.title:has-text("' + bookTitle + '")',
     ];
 
     let bookFound = false;

@@ -3,10 +3,15 @@ import { CREDENTIALS, BOOK_DATA, VALIDATION_MESSAGES, URLS , TIMEOUTS } from '..
 
 test.describe('Book Creation Tests', () => {
   test.beforeEach(async ({ page, authHelper, bookActions }) => {
-    // Login before each test
-    await authHelper.login(CREDENTIALS.VALID.USERNAME, CREDENTIALS.VALID.PASSWORD);
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
-    await bookActions.navigateToBooks();
+    try {
+      // Login before each test with better error handling
+      await authHelper.login(CREDENTIALS.VALID.USERNAME, CREDENTIALS.VALID.PASSWORD);
+      await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
+      await bookActions.navigateToBooks();
+    } catch (error) {
+      console.error('BeforeEach failed:', error);
+      throw error;
+    }
   });
 
   test('should create a book with all valid fields', async ({ page, bookActions, assertions }) => {
