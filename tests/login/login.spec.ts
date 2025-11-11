@@ -1,6 +1,5 @@
-import { test, expect, Locator } from '@playwright/test';
-import { AuthHelper } from '../helpers/auth';
-import { Assertions } from '../helpers/assertions';
+import { test, expect } from '../fixtures/test-helpers';
+import { Locator } from '@playwright/test';
 import { 
   CREDENTIALS, 
   TIMEOUTS, 
@@ -12,13 +11,7 @@ import {
 } from '../fixtures/test-data';
 
 test.describe('Login Functionality', () => {
-  let authHelper: AuthHelper;
-  let assertions: Assertions;
-
   test.beforeEach(async ({ page }) => {
-    authHelper = new AuthHelper(page);
-    assertions = new Assertions(page);
-
     // Maximize browser viewport
     await page.setViewportSize(VIEWPORT.DESKTOP);
 
@@ -27,7 +20,7 @@ test.describe('Login Functionality', () => {
     await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
   });
 
-  test('should successfully login with valid credentials', async ({ page }) => {
+  test('should successfully login with valid credentials', async ({ page, authHelper, assertions }) => {
     await authHelper.login('admin', 'admin');
     await assertions.verifyDashboardLoaded();
   });
@@ -54,7 +47,7 @@ test.describe('Login Functionality', () => {
   });
 
 
-  test('should display error  with your submission', async ({ page }) => {
+  test('should display error  with your submission', async ({ page, assertions }) => {
     await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
 
     const loginButton = page.locator('button[type="submit"], button:has-text("Log In")').first();
@@ -75,7 +68,7 @@ test.describe('Login Functionality', () => {
     expect(url.includes('login') || url === URLS.BASE_URL).toBeTruthy();
   });
 
-  test('should display error with empty username', async ({ page }) => {
+  test('should display error with empty username', async ({ page, assertions }) => {
     await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
 
     const passwordField = page.locator('input[type="password"]').first();
@@ -96,7 +89,7 @@ test.describe('Login Functionality', () => {
     expect(url.includes('login') || url === URLS.BASE_URL).toBeTruthy();
   });
 
-  test('should display error with empty password', async ({ page }) => {
+  test('should display error with empty password', async ({ page, assertions }) => {
     await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
 
     const usernameField = page.locator(SELECTORS.USERNAME_FIELD.join(', ')).first();
@@ -145,7 +138,7 @@ test.describe('Login Functionality', () => {
     await expect(passwordField).toHaveAttribute('type', 'password');
   });
 
-  test('This is a flaky test only to show Log out button doesn\'t work successfully', async ({ page }) => {
+  test('This is a flaky test only to show Log out button doesn\'t work successfully', async ({ page, authHelper, assertions }) => {
     await authHelper.login(CREDENTIALS.VALID.USERNAME, CREDENTIALS.VALID.PASSWORD);
     await assertions.verifyDashboardLoaded();
 

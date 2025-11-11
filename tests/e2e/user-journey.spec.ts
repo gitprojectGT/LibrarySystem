@@ -1,7 +1,4 @@
-import { test, expect } from '@playwright/test';
-import { AuthHelper } from '../helpers/auth';
-import { BookActions } from '../helpers/book-actions';
-import { Assertions } from '../helpers/assertions';
+import { test, expect } from '../fixtures/test-helpers';
 import { CREDENTIALS, BOOK_DATA, VIEWPORT, URLS, TIMEOUTS } from '../fixtures/test-data';
 
 /**
@@ -13,11 +10,8 @@ import { CREDENTIALS, BOOK_DATA, VIEWPORT, URLS, TIMEOUTS } from '../fixtures/te
 
 test.describe('E2E User Journeys', () => {
   test.describe('Successful User Journey: Login to Add Book', () => {
-    test('should complete full journey - login, navigate, and add a book', async ({ page }) => {
-      // Initialize helpers
-      const authHelper = new AuthHelper(page);
-      const bookActions = new BookActions(page);
-      const assertions = new Assertions(page);
+    test('should complete full journey - login, navigate, and add a book', async ({ page, authHelper, bookActions, assertions }) => {
+      // Helpers are now available as fixture parameters
 
       // ========== STEP 1: Navigate to Application ==========
       await test.step('Navigate to login page', async () => {
@@ -176,10 +170,8 @@ test.describe('E2E User Journeys', () => {
   });
 
   test.describe('Complete CRUD Journey', () => {
-    test('should complete full CRUD cycle - create, read, update, delete', async ({ page }) => {
-      const authHelper = new AuthHelper(page);
-      const bookActions = new BookActions(page);
-      const assertions = new Assertions(page);
+    test('should complete full CRUD cycle - create, read, update, delete', async ({ page, authHelper, bookActions, assertions }) => {
+      // Helpers are now available as fixture parameters
 
       // Login
       await test.step('Login to application', async () => {

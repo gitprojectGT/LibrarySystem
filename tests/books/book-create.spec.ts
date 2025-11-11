@@ -1,26 +1,15 @@
-import { test, expect } from '@playwright/test';
-import { AuthHelper } from '../helpers/auth';
-import { BookActions } from '../helpers/book-actions';
-import { Assertions } from '../helpers/assertions';
+import { test, expect } from '../fixtures/test-helpers';
 import { CREDENTIALS, BOOK_DATA, VALIDATION_MESSAGES, URLS , TIMEOUTS } from '../fixtures/test-data';
 
 test.describe('Book Creation Tests', () => {
-  let authHelper: AuthHelper;
-  let bookActions: BookActions;
-  let assertions: Assertions;
-
-  test.beforeEach(async ({ page }) => {
-    authHelper = new AuthHelper(page);
-    bookActions = new BookActions(page);
-    assertions = new Assertions(page);
-
+  test.beforeEach(async ({ page, authHelper, bookActions }) => {
     // Login before each test
     await authHelper.login(CREDENTIALS.VALID.USERNAME, CREDENTIALS.VALID.PASSWORD);
     await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
     await bookActions.navigateToBooks();
   });
 
-  test('should create a book with all valid fields', async ({ page }) => {
+  test('should create a book with all valid fields', async ({ page, bookActions, assertions }) => {
     // Navigate directly to add book page instead of using openAddBookDialog
     await page.goto(URLS.ADD_BOOK_PATH);
     await page.waitForLoadState('networkidle');
@@ -50,7 +39,7 @@ test.describe('Book Creation Tests', () => {
     await assertions.verifyBookInList(bookData.title);
   });
 
-  test('should validate empty title and author fields', async ({ page }) => {
+  test('should validate empty title and author fields', async ({ page, bookActions }) => {
     await bookActions.openAddBookDialog();
 
     const bookData = BOOK_DATA.EMPTY_VALIDATION_BOOK;
@@ -66,7 +55,7 @@ test.describe('Book Creation Tests', () => {
     expect(hasError).toBeFalsy();
   });
 
-  test('should handle special unicode characters in book details', async ({ page }) => {
+  test('should handle special unicode characters in book details', async ({ page, bookActions }) => {
     await bookActions.openAddBookDialog();
 
     const bookData = BOOK_DATA.UNICODE_BOOK;
@@ -82,7 +71,7 @@ test.describe('Book Creation Tests', () => {
     expect(bookVisible).toBeTruthy();
   });
 
-  test('should validate required fields and show error messages', async ({ page }) => {
+  test('should validate required fields and show error messages', async ({ page, bookActions, assertions }) => {
     // Navigate directly to add book page
     await page.goto(URLS.ADD_BOOK_PATH);
     // await page.waitForLoadState('domcontentloaded'); //
