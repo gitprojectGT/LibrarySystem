@@ -33,7 +33,7 @@ test.describe('Login Functionality', () => {
 
   test('should display error with invalid username or password', async ({ page }) => {
     // Manually fill the form to avoid timeout issues with helper
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+    await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
 
     const usernameField = page.locator(SELECTORS.USERNAME_FIELD.join(', ')).first();
     const passwordField = page.locator(SELECTORS.PASSWORD_FIELD).first();
@@ -75,7 +75,7 @@ test.describe('Login Functionality', () => {
   });
 
   test('should display error with empty username', async ({ page, assertions }) => {
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+    await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
 
     const passwordField = page.locator('input[type="password"]').first();
     const loginButton = page.locator(SELECTORS.LOGIN_BUTTON.join(', ')).first();
@@ -96,7 +96,7 @@ test.describe('Login Functionality', () => {
   });
 
   test('should display error with empty password', async ({ page, assertions }) => {
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+    await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
 
     const usernameField = page.locator(SELECTORS.USERNAME_FIELD.join(', ')).first();
     const loginButton = page.locator(SELECTORS.LOGIN_BUTTON.join(', ')).first();
@@ -151,7 +151,7 @@ test.describe('Login Functionality', () => {
     await authHelper.logout();
 
     // Should return to login page
-    await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+    await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
     const url = page.url();
     expect(url).toMatch(URL_PATTERNS.LOGOUT_WRONG_PATH);
   });
