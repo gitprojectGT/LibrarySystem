@@ -75,7 +75,7 @@ test.describe('E2E User Journeys', () => {
       await test.step('Navigate to add book page', async () => {
         // Navigate directly to add book page instead of using modal dialog
         await page.goto(URLS.ADD_BOOK_PATH);
-        await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+        await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
 
         // Verify we're on the add book page
         await expect(page).toHaveURL(URLS.ADD_BOOK_PATH);
@@ -197,7 +197,7 @@ test.describe('E2E User Journeys', () => {
       // CREATE
       await test.step('Create a new book', async () => {
         await page.goto(URLS.ADD_BOOK_PATH);
-        await page.waitForLoadState(TIMEOUTS.NETWORK_IDLE);
+        await page.waitForLoadState(TIMEOUTS.DOM_CONTENT_LOADED);
         await bookActions.fillBookForm(testBook);
         await bookActions.submitBookForm();
         await page.waitForTimeout(1000);
