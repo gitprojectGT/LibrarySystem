@@ -44,7 +44,7 @@ test.describe('Book Creation Tests', () => {
     await assertions.verifyBookInList(bookData.title);
   });
 
-  test('should validate empty title and author fields', async ({ page, bookActions }) => {
+  test('should validate empty title and author fields', async ({ page, bookActions, assertions }) => {
     await bookActions.openAddBookDialog();
 
     const bookData = BOOK_DATA.EMPTY_VALIDATION_BOOK;
@@ -52,12 +52,16 @@ test.describe('Book Creation Tests', () => {
     await bookActions.fillBookForm(bookData);
     await bookActions.submitBookForm();
 
-    // Should show validation error or remain on form
-    // The error displayed on page depends on which fields are invalid. 
-    // This approach covers both.
+    // Wait for validation errors to appear
+    await page.waitForTimeout(1000);
 
-    const hasError = await page.locator('.error, [class*="error"]').count() > 0;
-    expect(hasError).toBeTruthy();
+    // Should show validation error for required fields that are empty
+    const expectedErrors = [
+      VALIDATION_MESSAGES.REQUIRED_FIELDS.TITLE,
+      VALIDATION_MESSAGES.REQUIRED_FIELDS.AUTHOR,
+    ];
+
+    await assertions.verifyValidationErrors(expectedErrors);
   });
 
   test('should handle special unicode characters in book details', async ({ page, bookActions }) => {
