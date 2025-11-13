@@ -1,18 +1,20 @@
 /**
  * Test helpers fixtures for Library System E2E tests
- * Provides reusable helper instances for authentication, book actions, and assertions
+ * Provides reusable helper instances for authentication, book actions, assertions, and data management
  */
 
 import { test as base, Page } from '@playwright/test';
 import { AuthHelper } from '../helpers/auth';
 import { BookActions } from '../helpers/book-actions';
 import { Assertions } from '../helpers/assertions';
+import { TestDataFixture } from './data-fixture';
 
 // Define the test helpers type
 type TestHelpers = {
   authHelper: AuthHelper;
   bookActions: BookActions;
   assertions: Assertions;
+  testData: TestDataFixture;
 };
 
 /**
@@ -42,6 +44,14 @@ export const test = base.extend<TestHelpers>({
   assertions: async ({ page }: { page: Page }, use: (r: Assertions) => Promise<void>) => {
     const assertions = new Assertions(page);
     await use(assertions);
+  },
+
+  /**
+   * TestData fixture - provides access to static JSON data and dynamic Faker generation
+   */
+  testData: async ({}, use: (r: TestDataFixture) => Promise<void>) => {
+    const testDataFixture = TestDataFixture.getInstance();
+    await use(testDataFixture);
   },
 });
 

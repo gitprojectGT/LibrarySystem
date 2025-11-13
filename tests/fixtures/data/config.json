@@ -1,0 +1,59 @@
+{
+  "urls": {
+    "loginPath": "/login",
+    "booksPath": "/books",
+    "addBookPath": "/add-book",
+    "baseUrl": "https://frontendui-librarysystem.onrender.com"
+  },
+  "timeouts": {
+    "networkIdle": "networkidle",
+    "domContentLoaded": "domcontentloaded",
+    "load": "load"
+  },
+  "viewport": {
+    "desktop": {
+      "width": 1920,
+      "height": 1080
+    },
+    "tablet": {
+      "width": 768,
+      "height": 1024
+    },
+    "mobile": {
+      "width": 375,
+      "height": 667
+    }
+  },
+  "validationMessages": {
+    "requiredFields": {
+      "title": "Title is required",
+      "author": "Author is required",
+      "genre": "Genre is required",
+      "isbn": "ISBN is required",
+      "publicationDate": "Publication Date is required",
+      "price": "Price is required"
+    },
+    "login": {
+      "invalidCredentials": "Invalid username or password",
+      "emptyUsername": "Username is required",
+      "emptyPassword": "Password is required"
+    }
+  },
+  "selectors": {
+    "loginForm": {
+      "usernameInput": "#username",
+      "passwordInput": "#password",
+      "submitButton": "button[type=\"submit\"]",
+      "errorMessage": ".error-message"
+    },
+    "bookForm": {
+      "titleInput": "#title",
+      "authorInput": "#author",
+      "isbnInput": "#isbn",
+      "genreInput": "#genre",
+      "publicationDateInput": "#publicationDate",
+      "priceInput": "#price",
+      "submitButton": "button[type=\"submit\"]"
+    }
+  }
+}
