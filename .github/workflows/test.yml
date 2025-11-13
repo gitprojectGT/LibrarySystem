@@ -25,7 +25,7 @@ jobs:
         run: npx playwright install --with-deps
         
       - name: Wait for server
-        run: npm run wait-for-server
+        run: npm run wait-for-server-bash
         
       - name: Run tests
         run: npm test
