@@ -4,10 +4,10 @@
  */
 
 import { test as base, Page } from '@playwright/test';
-import { AuthHelper } from '../helpers/auth';
-import { BookActions } from '../helpers/book-actions';
-import { Assertions } from '../helpers/assertions';
-import { TestDataFixture } from './data-fixture';
+import { AuthHelper } from '../helpers/auth.js';
+import { BookActions } from '../helpers/book-actions.js';
+import { Assertions } from '../helpers/assertions.js';
+import { TestDataFixture } from './data-fixture.js';
 
 // Define the test helpers type
 type TestHelpers = {

@@ -17,6 +17,10 @@ npx playwright install
 **Important**: Always wait for the server to be ready before running tests (hosted app may be sleeping):
 
 ```bash
+npm run wait-for-server-bash
+```
+
+```powershell
 npm run wait-for-server
 ```
 

@@ -1,5 +1,5 @@
 import { Page } from '@playwright/test';
-import { SELECTORS, TIMEOUTS, VIEWPORT, URLS } from '../fixtures/test-data';
+import { SELECTORS, TIMEOUTS, VIEWPORT, URLS } from '../fixtures/test-data.js';
 
 /**
  * Authentication helper for managing login state

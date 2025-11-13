@@ -1,5 +1,5 @@
 # Wait for server to be ready because the environment has not started before running tests
-# Pings the URL until it responds successfully. 
+# Pings the URL until it responds successfully. Fot Windows lovers with PowerShell.
 # The below application URL is built on demand so it's important to wait until it is ready
 
 $SERVER_URL = "https://frontendui-librarysystem.onrender.com"

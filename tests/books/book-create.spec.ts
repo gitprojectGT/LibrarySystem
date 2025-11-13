@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures/test-helpers';
+import { test, expect } from '../fixtures/test-helpers.js';
 
 test.describe('Book Creation Tests', () => {
   test.beforeEach(async ({ page, authHelper, bookActions, testData }) => {

@@ -1,5 +1,5 @@
 import { Page } from '@playwright/test';
-import { SELECTORS, FORM_FIELDS, TIMEOUTS } from '../fixtures/test-data';
+import { SELECTORS, FORM_FIELDS, TIMEOUTS } from '../fixtures/test-data.js';
 
 /**
  * Book-related action helpers

@@ -3,7 +3,7 @@
  * This file demonstrates various ways to use static JSON data and Faker-generated data
  */
 
-import { test, expect } from '../fixtures/test-helpers';
+import { test, expect } from '../fixtures/test-helpers.js';
 
 test.describe('Data Fixture Usage Examples', () => {
   

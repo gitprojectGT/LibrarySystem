@@ -5,7 +5,12 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { BookDataGenerator, type BookData, type PartialBookData } from './book-generator';
+import { fileURLToPath } from 'url';
+import { BookDataGenerator, type BookData, type PartialBookData } from './book-generator.js';
+
+// ES module compatibility for __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Type definitions for JSON data structure
 interface StaticBookData {

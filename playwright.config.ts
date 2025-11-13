@@ -39,7 +39,7 @@ export default defineConfig({
     },
   ],
 
-  timeout: 45000, // Increase timeout for stability
+  timeout: 45000, // Increase timeout for stability . yeah!
   expect: {
     timeout: 10000, // Increase expect timeout
   },

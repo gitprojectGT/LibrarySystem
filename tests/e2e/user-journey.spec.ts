@@ -1,5 +1,5 @@
-import { test, expect } from '../fixtures/test-helpers';
-import { CREDENTIALS, BOOK_DATA, VIEWPORT, URLS, TIMEOUTS } from '../fixtures/test-data';
+import { test, expect } from '../fixtures/test-helpers.js';
+import { CREDENTIALS, BOOK_DATA, VIEWPORT, URLS, TIMEOUTS } from '../fixtures/test-data.js';
 
 /**
  * End-to-End User Journey Tests

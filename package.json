@@ -2,6 +2,7 @@
   "name": "librarysystem",
   "version": "1.0.0",
   "description": "Playwright E2E tests for Library System application",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "wait-for-server": "powershell -ExecutionPolicy Bypass -File wait-for-server.ps1",

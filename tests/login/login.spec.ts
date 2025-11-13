@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures/test-helpers';
+import { test, expect } from '../fixtures/test-helpers.js';
 import { Locator } from '@playwright/test';
 import { 
   CREDENTIALS, 
@@ -8,7 +8,7 @@ import {
   URL_PATTERNS, 
   VALIDATION_MESSAGES_LOGIN,
   SELECTORS
-} from '../fixtures/test-data';
+} from '../fixtures/test-data.js';
 
 test.describe('Login Functionality', () => {
   test.beforeEach(async ({ page }) => {

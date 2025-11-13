@@ -1,5 +1,5 @@
 import { expect, Page, Locator } from '@playwright/test';
-import { SELECTORS, URL_PATTERNS, TIMEOUTS } from '../fixtures/test-data';
+import { SELECTORS, URL_PATTERNS, TIMEOUTS } from '../fixtures/test-data.js';
 
 /**
  * Assertion helpers for Library System tests

@@ -1,5 +1,5 @@
-import { test, expect } from '../fixtures/test-helpers';
-import { CREDENTIALS,BOOK_DATA, TIMEOUTS } from '../fixtures/test-data';
+import { test, expect } from '../fixtures/test-helpers.js';
+import { CREDENTIALS,BOOK_DATA, TIMEOUTS } from '../fixtures/test-data.js';
 
 test.describe('Book Deletion Tests', () => {
   test.beforeEach(async ({ page, authHelper, bookActions }) => {
