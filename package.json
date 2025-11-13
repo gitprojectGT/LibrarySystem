@@ -4,7 +4,8 @@
   "description": "Playwright E2E tests for Library System application",
   "main": "index.js",
   "scripts": {
-    "wait-for-server": "bash wait-for-server.sh",
+    "wait-for-server": "powershell -ExecutionPolicy Bypass -File wait-for-server.ps1",
+    "wait-for-server-bash": "bash wait-for-server.sh",
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",

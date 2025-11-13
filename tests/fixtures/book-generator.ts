@@ -26,20 +26,13 @@ export interface PartialBookData {
 export class BookDataGenerator {
   private static readonly GENRES = [
     'Fiction',
-    'Non-Fiction',
+    'Non-Fiction', 
     'Mystery',
-    'Science Fiction',
-    'Fantasy',
     'Romance',
     'Thriller',
+    'Fantasy',
     'Biography',
-    'History',
-    'Self-Help',
-    'Programming',
-    'Technology',
-    'Business',
-    'Psychology',
-    'Philosophy'
+    'History'
   ];
 
   /**
@@ -47,8 +40,8 @@ export class BookDataGenerator {
    */
   static generateBook(overrides?: PartialBookData): BookData {
     return {
-      title: overrides?.title ?? faker.book.title(),
-      author: overrides?.author ?? faker.book.author(),
+      title: overrides?.title ?? faker.lorem.words({ min: 1, max: 4 }),
+      author: overrides?.author ?? faker.person.fullName(),
       isbn: overrides?.isbn ?? faker.commerce.isbn({ variant: 13, separator: '' }),
       genre: overrides?.genre ?? faker.helpers.arrayElement(this.GENRES),
       publicationDate: overrides?.publicationDate ?? faker.date.past({ years: 50 }).toISOString().split('T')[0],
@@ -140,8 +133,8 @@ export class BookDataGenerator {
    */
   static generateInvalidBook(): BookData {
     return {
-      title: faker.book.title(),
-      author: faker.book.author(),
+      title: faker.lorem.words({ min: 1, max: 4 }),
+      author: faker.person.fullName(),
       isbn: 'invalid-isbn',
       genre: faker.helpers.arrayElement(this.GENRES),
       publicationDate: '2025-13-45', // Invalid date
@@ -154,7 +147,7 @@ export class BookDataGenerator {
    */
   static generateBookWithPattern(pattern: string): BookData {
     return this.generateBook({
-      title: `${pattern} ${faker.book.title()}`,
+      title: `${pattern} ${faker.lorem.words({ min: 1, max: 3 })}`,
       author: `${faker.person.firstName()} ${pattern}`
     });
   }

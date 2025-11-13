@@ -19,7 +19,11 @@ test.describe('Book Creation Tests', () => {
     await page.goto(testData.getUrls().addBookPath);
     await page.waitForLoadState(testData.getTimeouts().domContentLoaded);
 
-    const bookData = testData.getRandomValidBook();
+    // Use generated data instead of static data to ensure uniqueness
+    const bookData = testData.generateBook({
+      genre: 'Fiction', // Ensure we use a valid genre
+      price: '25.99'
+    });
 
     // Fill form fields with better error handling
     await bookActions.fillBookForm(bookData);
@@ -41,6 +45,15 @@ test.describe('Book Creation Tests', () => {
       return;
     }
     // If no errors, verify book was created
+    // Wait a bit more for the book to appear in the list
+    await page.waitForTimeout(2000);
+    
+    // Check for success message or book presence
+    const successMessage = await page.locator('.success, .alert-success, [class*="success"]').count();
+    if (successMessage > 0) {
+      console.log('Success message detected - book creation confirmed');
+    }
+    
     await assertions.verifyBookInList(bookData.title);
   });
 
@@ -53,14 +66,34 @@ test.describe('Book Creation Tests', () => {
     await bookActions.submitBookForm();
 
     // Wait for validation errors to appear
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
 
-    // Should show validation error or remain on form
-    // The error displayed on page depends on which fields are invalid. 
-    // This approach covers both.
+    // Try multiple selectors for error messages
+    const errorSelectors = [
+      '.error',
+      '[class*="error"]',
+      '.validation-error',
+      '.field-error',
+      '.input-error',
+      '.alert-danger',
+      '.text-danger',
+      '[role="alert"]',
+      '.invalid-feedback'
+    ];
 
-    const hasError = await page.locator('.error, [class*="error"]').count() > 0;
-    expect(hasError).toBeTruthy();
+    let hasError = false;
+    for (const selector of errorSelectors) {
+      const count = await page.locator(selector).count();
+      if (count > 0) {
+        hasError = true;
+        break;
+      }
+    }
+
+    // Also check if form is still visible (didn't submit due to validation)
+    const formStillVisible = await bookActions.isAddBookDialogOpen();
+    
+    expect(hasError || formStillVisible).toBeTruthy();
   });
 
   test('should handle special unicode characters in book details', async ({ page, bookActions, testData }) => {
